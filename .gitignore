@@ -1,5 +1,9 @@
-/Python - praca z plikami.pdf
+Python - praca z plikami.pdf
+osoby.csv
+osoby.json
+osoby.txt
+.gitignore
+/.gitignore
 /osoby.csv
 /osoby.json
 /osoby.txt
-/.gitignore
