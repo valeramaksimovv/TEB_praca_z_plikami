@@ -1,60 +1,71 @@
 import csv
 import json
+import os
 
-class Osoba:
-    def __init__(self, imie, nazwisko, wiek, email):
-        self.imie = imie
-        self.nazwisko = nazwisko
-        self.wiek = wiek
-        self.email = email
-
-    def __repr__(self):
-        return f"{self.imie} {self.nazwisko} {self.wiek} {self.email}"
-
-    def to_list(self):
-        return [self.imie,self.nazwisko,self.wiek,self.email]
-
-    @classmethod
-    def from_list(cls,lista):
-        imie, nazwisko, wiek, email = linia
-        return cls(imie,nazwisko,int(wiek),email)
-
-    def to_dict(self):
-        return {
-            "imie": self.imie,
-            "nazwisko": self.nazwisko,
-            "wiek": self.wiek,
-            "email": self.email
-        }
-
-    @classmethod
-    def from_dict(cls,slownik):
-        return cls(
-            slownik["imie"],
-            slownik["nazwisko"],
-            slownik["wiek"],
-            slownik["email"]
-        )
+from osoba_class import Osoba
 
 
+osoby = [] 
 
+def wczytaj_z_json(nazwa_pliku="osoby.json"):
+    global osoby
+    try:
+        with open(nazwa_pliku, "r") as plik:
+            dane = json.load(plik)
+            osoby = [Osoba.from_dict(o) for o in dane]
+            print(f"\nZaladowano {len(osoby)} osob z pliku {nazwa_pliku}")
+    except FileNotFoundError:
+        print("Plik nie istnieje — zaczynamy z pustą lista.")
+    except Exception as e:
+        print(f"Blad przy wczytywaniu: {e}")
 
+def zapisz_do_json(nazwa_pliku="osoby.json"):
+    with open(nazwa_pliku, "w") as plik:
+        json.dump([o.to_dict() for o in osoby], plik, indent=4)
+    print(f"Zapisano {len(osoby)} osob do pliku {nazwa_pliku}")
+
+def dodaj_osobe():
+    print("\n[+] Dodaj osobe:")
+    imie = input("Imie: ")
+    nazwisko = input("Nazwisko: ")
+    wiek = int(input("Wiek: "))
+    email = input("Email: ")
+    osoby.append(Osoba(imie, nazwisko, wiek, email))
+    print("Osoba dodana.")
+
+def usun_osobe():
+    nazwisko = input("Podaj nazwisko do usuniecia: ")
+    global osoby
+    przed = len(osoby)
+    osoby = [o for o in osoby if o.nazwisko.lower() != nazwisko.lower()]
+    ile = przed - len(osoby)
+    print(f"Usunięto {ile} osoba/osob." if ile else "[!] Nie znaleziono osoby.")
+
+def wyswietl_osoby():
+    if not osoby:
+        print("Brak danych.")
+    else:
+        print("\n Lista osob:")
+        for o in osoby:
+            print(f" - {o}")
 
 
 osoby = [
     Osoba("Jan","Kowalski",23,"jaski@gmail.com"),
-    Osoba("Kasia","Król",30,"kasiól@gmail.com"),
+    Osoba("Kasia","Krol",30,"kasiol@gmail.com"),
     Osoba("Piotr","Dom",35,"dotr@gmail.com"),
-    Osoba("Paweł","Miły",45,"milypawel@gmail.com"),
-    Osoba("Kuba","Całus",39,"kulus@gmail.com"),
+    Osoba("Pawel","Mily",45,"milypawel@gmail.com"),
+    Osoba("Kuba","Calus",39,"kulus@gmail.com"),
 ]
 print("Osoby1")
 print(osoby)
 
-with open("osoby.txt","w") as plik_txt:      # w- zapis do pliku,  a - dopisanie do pliku, r- czytanie z pliku
+with open("osoby.txt","w") as plik_txt:  
     plik_txt.write("imie nazwisko wiek email\n")
     for osoba in osoby:
         plik_txt.write(osoba.__repr__()+"\n")
+
+
 
 osoby2 = []
 
@@ -97,25 +108,31 @@ print("Osoby4")
 print(osoby4)
 
 
-# Zadanie 1
+def menu():
+    while True:
+        print("\n========= MENU =========")
+        print("1. Wyswietl osoby")
+        print("2. Dodaj osobe")
+        print("3. Usun osobe po nazwisku")
+        print("4. Zapisz do JSON")
+        print("5. Wczytaj z JSON")
+        print("0. Wyjdz")
+        print("========================")
 
-suma_wiek = sum(osoba.wiek for osoba in osoby3)
-sredni_wiek = suma_wiek / len(osoby3)
-print(f"Średni wiek osób: {sredni_wiek:.2f}")
-
-X = int(input("Podaj wiek X: "))
-starsze_osoby = [osoba for osoba in osoby3 if osoba.wiek > X]
-print(f"Osoby starsze niż {X} lat:")
-for osoba in starsze_osoby:
-    print(f"  - {osoba}")
-
-osoby_posortowane = sorted(osoby3, key=lambda o: o.nazwisko)
-
-with open("osoby_posortowane.csv", "w", newline='') as plik_sort:
-    writer = csv.writer(plik_sort)
-    writer.writerow(["Imie", "Nazwisko", "Wiek", "Email"])
-    for osoba in osoby_posortowane:
-        writer.writerow(osoba.to_list())
-
-print("Zapisano osoby_posortowane.csv")
+        wybor = input("Wybierz opcje: ")
+        if wybor == "1":
+            wyswietl_osoby()
+        elif wybor == "2":
+            dodaj_osobe()
+        elif wybor == "3":
+            usun_osobe()
+        elif wybor == "4":
+            zapisz_do_json()
+        elif wybor == "5":
+            wczytaj_z_json()
+        elif wybor == "0":
+            print("Zakonczono.")
+            break
+        else:
+            print("Nieprawidłowa opcja.")
 
