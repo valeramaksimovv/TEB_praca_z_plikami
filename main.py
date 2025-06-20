@@ -45,6 +45,36 @@ def wyswietl_osoby():
         for o in osoby:
             print(f" - {o}")
 
+def edytuj_osobe():
+    nazwisko = input("Podaj nazwisko osoby do edycji: ").lower()
+    znalezione = [o for o in osoby if o.nazwisko.lower() == nazwisko]
+
+    if not znalezione:
+        print("[!] Nie znaleziono osoby.")
+        return
+
+    osoba = znalezione[0]
+    print(f"Znaleziono: {osoba}")
+
+    nowe_imie = input(f"Nowe imię (ENTER = {osoba.imie}): ") or osoba.imie
+    nowe_nazwisko = input(f"Nowe nazwisko (ENTER = {osoba.nazwisko}): ") or osoba.nazwisko
+    nowe_email = input(f"Nowy email (ENTER = {osoba.email}): ") or osoba.email
+
+    wiek_input = input(f"Nowy wiek (ENTER = {osoba.wiek}): ")
+    try:
+        nowe_wiek = int(wiek_input) if wiek_input.strip() else osoba.wiek
+    except ValueError:
+        print("[!] Błędny wiek — pozostaje bez zmian.")
+        nowe_wiek = osoba.wiek
+
+    osoba.imie = nowe_imie
+    osoba.nazwisko = nowe_nazwisko
+    osoba.email = nowe_email
+    osoba.wiek = nowe_wiek
+
+    print("[✓] Dane osoby zaktualizowane.")
+    zapisz_do_json()
+
 def menu():
     while True:
         print("\n========= MENU =========")
@@ -53,6 +83,7 @@ def menu():
         print("3. Usun osobe po nazwisku")
         print("4. Zapisz do JSON")
         print("5. Wczytaj z JSON")
+        print("6. Edytuj osobe po nazwisku")
         print("0. Wyjdz")
         print("========================")
 
@@ -67,6 +98,8 @@ def menu():
             zapisz_do_json()
         elif wybor == "5":
             wczytaj_z_json()
+        elif wybor == "6":
+             edytuj_osobe()
         elif wybor == "0":
             print("Zakonczono.")
             break
