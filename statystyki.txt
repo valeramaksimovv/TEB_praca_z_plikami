@@ -1,0 +1,5 @@
+Liczba osob: 7
+Sredni wiek: 36.14
+Najmlodsza osoba: Jan Kowalski (23)
+Najstarsza osoba: Old Person (48)
+Osoby z Gmaila: 5

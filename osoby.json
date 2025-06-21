@@ -34,5 +34,11 @@
         "nazwisko": "Maksimov",
         "wiek": 33,
         "email": "newmail@mail.com"
+    },
+    {
+        "imie": "Old",
+        "nazwisko": "Person",
+        "wiek": 48,
+        "email": "olduser@mail.com"
     }
 ]

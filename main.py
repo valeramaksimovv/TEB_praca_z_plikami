@@ -143,12 +143,34 @@ def zapisz_log(wiadomosc, plik_log="log.txt"):
     with open(plik_log, "a", encoding="utf-8") as f:
         f.write(f"[{czas}] {wiadomosc}\n")
 
+# statistics
+def zapisz_statystyki(nazwa_pliku="statystyki.txt"):
+    if not osoby:
+        print("!XQ Brak danych do analizy.")
+        return
+
+    liczba_osob = len(osoby)
+    sredni_wiek = sum(o.wiek for o in osoby) / liczba_osob
+
+    najm = min(osoby, key=lambda o: o.wiek)
+    najw = max(osoby, key=lambda o: o.wiek)
+
+    liczba_gmail = sum(1 for o in osoby if "gmail.com" in o.email.lower())
+
+    with open(nazwa_pliku, "w", encoding="utf-8") as f:
+        f.write(f"Liczba osob: {liczba_osob}\n")
+        f.write(f"Sredni wiek: {sredni_wiek:.2f}\n")
+        f.write(f"Najmlodsza osoba: {najm.imie} {najm.nazwisko} ({najm.wiek})\n")
+        f.write(f"Najstarsza osoba: {najw.imie} {najw.nazwisko} ({najw.wiek})\n")
+        f.write(f"Osoby z Gmaila: {liczba_gmail}\n")
+
+    print(f"Zapisano statystyki do pliku {nazwa_pliku}")
 
 
 
-#############
-# Main menu #
-#############
+#################
+### Main menu ###
+#################
 def menu():
     while True:
         print("\n========= MENU =========")
@@ -162,6 +184,7 @@ def menu():
         print("8. Zapisz do CSV")
         print("9. Wczytaj z CSV")
         print("10. Zapisz do TXT")
+        print("11. Zapisz statystyki do pliku")
         print("0. Wyjdz")
         print("========================")
 
@@ -186,6 +209,8 @@ def menu():
             wczytaj_z_csv()
         elif wybor == "10":
             zapisz_do_txt()
+        elif wybor == "11":
+            zapisz_statystyki()
         elif wybor == "0":
             print("Zakonczono.")
             break
