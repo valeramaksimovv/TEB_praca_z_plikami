@@ -20,6 +20,7 @@ def zapisz_do_json(nazwa_pliku="osoby.json"):
         json.dump([o.to_dict() for o in osoby], plik, indent=4, ensure_ascii=False)
     print(f"Zapisano {len(osoby)} osob do pliku {nazwa_pliku}")
 
+# add person
 def dodaj_osobe():
     print("\n[+] Dodaj osobe:")
     imie = input("Imie: ")
@@ -29,6 +30,7 @@ def dodaj_osobe():
     osoby.append(Osoba(imie, nazwisko, wiek, email))
     print("Osoba dodana.")
 
+# rm person
 def usun_osobe():
     nazwisko = input("Podaj nazwisko do usuniecia: ")
     global osoby
@@ -39,12 +41,13 @@ def usun_osobe():
 
 def wyswietl_osoby():
     if not osoby:
-        print("Brak danych.")
+        print(" !X! Brak danych.")
     else:
         print("\n Lista osob:")
         for o in osoby:
             print(f" - {o}")
 
+# edit person
 def edytuj_osobe():
     nazwisko = input("Podaj nazwisko osoby do edycji: ").lower()
     znalezione = [o for o in osoby if o.nazwisko.lower() == nazwisko]
@@ -72,9 +75,30 @@ def edytuj_osobe():
     osoba.email = nowe_email
     osoba.wiek = nowe_wiek
 
-    print("[✓] Dane osoby zaktualizowane.")
+    print("Dane osoby zaktualizowane.")
     zapisz_do_json()
 
+# Find person by first/last-name & mail
+def wyszukaj_osoby():
+    fraza = input("Wprowadz fraze do wyszukania (imie, nazwisko, domena e-mail): ").lower()
+
+    wyniki = [
+        o for o in osoby
+        if fraza in o.imie.lower()
+        or fraza in o.nazwisko.lower()
+        or fraza in o.email.lower()
+    ]
+
+    if not wyniki:
+        print(" !X! Nie znaleziono zadnych osob.")
+    else:
+        print(f"Znaleziono {len(wyniki)} osoby/osob:")
+        for o in wyniki:
+            print(" -", o)
+
+#############
+# Main menu #
+#############
 def menu():
     while True:
         print("\n========= MENU =========")
@@ -84,6 +108,7 @@ def menu():
         print("4. Zapisz do JSON")
         print("5. Wczytaj z JSON")
         print("6. Edytuj osobe po nazwisku")
+        print("7. Wyszukaj osoby")
         print("0. Wyjdz")
         print("========================")
 
@@ -99,12 +124,14 @@ def menu():
         elif wybor == "5":
             wczytaj_z_json()
         elif wybor == "6":
-             edytuj_osobe()
+            edytuj_osobe()
+        elif wybor == "7":
+            wyszukaj_osoby()
         elif wybor == "0":
             print("Zakonczono.")
             break
         else:
-            print("Nieprawidłowa opcja.")
+            print(" !X! Nieprawidłowa opcja.")
 
 if __name__ == "__main__":
     wczytaj_z_json()
