@@ -29,6 +29,7 @@ def dodaj_osobe():
     email = input("Email: ")
     osoby.append(Osoba(imie, nazwisko, wiek, email))
     print("Osoba dodana.")
+    zapisz_log(f"Dodano osobe: {imie} {nazwisko}, {wiek} lat, {email}")
 
 # rm person
 def usun_osobe():
@@ -38,6 +39,7 @@ def usun_osobe():
     osoby = [o for o in osoby if o.nazwisko.lower() != nazwisko.lower()]
     ile = przed - len(osoby)
     print(f"Usunieto {ile} osoba/osob." if ile else "[!] Nie znaleziono osoby.")
+    zapisz_log(f"Usunieto osoby z nazwiskiem: {nazwisko} ({ile} szt.)")
 
 def wyswietl_osoby():
     if not osoby:
@@ -77,6 +79,7 @@ def edytuj_osobe():
 
     print("Dane osoby zaktualizowane.")
     zapisz_do_json()
+    zapisz_log(f"Edytowano dane osoby: {osoba.imie} {osoba.nazwisko}")
 
 # Find person by first/last-name & mail
 def wyszukaj_osoby():
@@ -95,6 +98,19 @@ def wyszukaj_osoby():
         print(f"Znaleziono {len(wyniki)} osoby/osob:")
         for o in wyniki:
             print(" -", o)
+
+    zapisz_log(f"Wyszukiwano fraze: '{fraza}' — znaleziono {len(wyniki)} wynikow")
+
+# log change system
+from datetime import datetime
+
+def zapisz_log(wiadomosc, plik_log="log.txt"):
+    czas = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(plik_log, "a", encoding="utf-8") as f:
+        f.write(f"[{czas}] {wiadomosc}\n")
+
+
+
 
 #############
 # Main menu #
