@@ -1,8 +1,12 @@
-from osoba_class import Osoba
 import json
+import csv
+from datetime import datetime
+from osoba_class import Osoba
+
 
 osoby = []
 
+# json operations
 def wczytaj_z_json(nazwa_pliku="osoby.json"):
     global osoby
     try:
@@ -18,6 +22,36 @@ def wczytaj_z_json(nazwa_pliku="osoby.json"):
 def zapisz_do_json(nazwa_pliku="osoby.json"):
     with open(nazwa_pliku, "w", encoding="utf-8") as plik:
         json.dump([o.to_dict() for o in osoby], plik, indent=4, ensure_ascii=False)
+    print(f"Zapisano {len(osoby)} osob do pliku {nazwa_pliku}")
+
+# csv reade
+def wczytaj_z_csv(nazwa_pliku="osoby.csv"):
+    global osoby
+    try:
+        with open(nazwa_pliku, "r", encoding="utf-8") as f:
+            reader = csv.reader(f)
+            next(reader)
+            osoby = [Osoba.from_list(row) for row in reader]
+        print(f"Wczytano {len(osoby)} osob z pliku {nazwa_pliku}")
+    except FileNotFoundError:
+        print("Plik CSV nie istnieje.")
+    except Exception as e:
+        print(f"Bląd przy wczytywaniu CSV: {e}")
+
+# csv writer
+def zapisz_do_csv(nazwa_pliku="osoby.csv"):
+    with open(nazwa_pliku, "w", newline='', encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Imie", "Nazwisko", "Wiek", "Email"])
+        for osoba in osoby:
+            writer.writerow(osoba.to_list())
+    print(f"Zapisano {len(osoby)} osob do pliku {nazwa_pliku}")
+
+# txt writer
+def zapisz_do_txt(nazwa_pliku="osoby.txt"):
+    with open(nazwa_pliku, "w", encoding="utf-8") as f:
+        for o in osoby:
+            f.write(f"{o.imie} {o.nazwisko} {o.wiek} {o.email}\n")
     print(f"Zapisano {len(osoby)} osob do pliku {nazwa_pliku}")
 
 # add person
@@ -125,6 +159,9 @@ def menu():
         print("5. Wczytaj z JSON")
         print("6. Edytuj osobe po nazwisku")
         print("7. Wyszukaj osoby")
+        print("8. Zapisz do CSV")
+        print("9. Wczytaj z CSV")
+        print("10. Zapisz do TXT")
         print("0. Wyjdz")
         print("========================")
 
@@ -143,6 +180,12 @@ def menu():
             edytuj_osobe()
         elif wybor == "7":
             wyszukaj_osoby()
+        elif wybor == "8":
+            zapisz_do_csv()
+        elif wybor == "9":
+            wczytaj_z_csv()
+        elif wybor == "10":
+            zapisz_do_txt()
         elif wybor == "0":
             print("Zakonczono.")
             break
